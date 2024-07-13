@@ -33,7 +33,7 @@ export default NextAuth({
         },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.email.trim() || !credentials?.password.trim()) {
           throw new Error("Email and password required");
         }
 
@@ -66,10 +66,10 @@ export default NextAuth({
   debug: process.env.NODE_ENV === "development",
   adapter: PrismaAdapter(prismadb),
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // セッションの設定
   },
   jwt: {
-    secret: process.env.NEXTAUTH_JWT_SECRET,
+    secret: process.env.NEXTAUTH_JWT_SECRET, // JWTのシークレットキーの設定
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET, // NextAuthのシークレットキーの設定
 });
