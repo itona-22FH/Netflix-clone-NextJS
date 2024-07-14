@@ -33,7 +33,7 @@ export default NextAuth({
         },
       },
       async authorize(credentials) {
-        if (!credentials?.email.trim() || !credentials?.password.trim()) {
+        if (!credentials?.email || !credentials?.password) {
           throw new Error("Email and password required");
         }
 

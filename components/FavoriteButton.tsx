@@ -16,21 +16,24 @@ const FavoriteButton = ({ movieId }: FavoriteButtonProps) => {
 
   const toggleFavorites = useCallback(async () => {
     let response;
+    try {
+      if (isFavorite) {
+        response = await axios.delete("/api/favorite", { data: { movieId } });
+      } else {
+        response = await axios.post("/api/favorite", { movieId });
+      }
 
-    if (!isFavorite) {
-      response = await axios.post("/api/favorite", { movieId });
-    } else {
-      response = await axios.delete("/api/favorite", { data: { movieId } });
+      const updatedFavoriteIds = response?.data?.favoriteIds;
+
+      mutate({
+        ...currentUser,
+        favoriteIds: updatedFavoriteIds,
+      });
+
+      mutateFavorites();
+    } catch (error) {
+      console.log(error);
     }
-
-    const updatedFavoriteIds = response?.data?.favoriteIds;
-
-    mutate({
-      ...currentUser,
-      favoriteIds: updatedFavoriteIds,
-    });
-
-    mutateFavorites();
   }, [movieId, isFavorite, currentUser, mutate, mutateFavorites]);
 
   const Icon = isFavorite ? AiOutlineCheck : AiOutlinePlus;
